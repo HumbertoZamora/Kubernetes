@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-server
+  namespace: gitea-server
+  labels:
+    app: gitea-server
+spec:
+  storageClassName: n1k8s-nfs
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

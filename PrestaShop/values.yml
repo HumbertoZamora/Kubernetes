@@ -1,0 +1,6 @@
+persistence:
+  enabled: true
+  storageClass: "n1k8s-nfs"
+  accessMode: ReadWriteOnce
+  size: 2Gi
+

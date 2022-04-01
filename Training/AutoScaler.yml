@@ -1,0 +1,26 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-srv
+  namespace: training
+  labels:
+    app.kubernetes.io/name: nginx-ha
+    app.kubernetes.io/instance: training
+    app.kubernetes.io/managed-by: HumberZam
+    app.kubernetes.io/component: ServidorWEB
+    app.kubernetes.io/part-of: Independiente
+    app.kubernetes.io/version: "1"
+spec:
+  metrics:
+  - type: Resource 
+    resource:
+      name: cpu
+      target: 
+        type: Utilization
+        averageUtilization: 20
+
+  scaleTargetRef:
+    kind: Deployment
+    name: nginx-srv
+  minReplicas: 2
+  maxReplicas: 5

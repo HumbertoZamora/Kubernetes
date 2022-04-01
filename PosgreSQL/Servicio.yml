@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-postgres
+  namespace: postgresql
+  labels:
+    ambiente: desarrollo
+    desarrollador: humberto-zamora
+    proposito: servicio_postgres
+
+spec:
+  type: ClusterIP
+  selector:
+    labelsvc: svc-postgres
+  ports:
+  - name: postgres-db
+    protocol: TCP
+    port: 5432
+    nodePort: 30010

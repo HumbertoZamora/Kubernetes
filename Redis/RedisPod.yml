@@ -1,0 +1,74 @@
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: redis
+#   labels:
+#     app: metallb
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpl-redis
+  namespace: redis
+  labels:
+    app.Deploy.io-name: dpl-redis
+    app.Deploy.io-instance: redis
+    app.Deploy.io-managed-by: humberzam
+    app.Deploy.io-component: servidor-redis
+    app.Deploy.io-part-of: independiente
+    app.Deploy.io-version: v1
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      labelsvc: redis-srv
+
+  template:
+    metadata:
+      name: redis-srv
+      labels:
+        labelsvc: redis-srv
+
+    spec:
+      containers:
+        - name: redis-srv
+          image: redis:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+               cpu: 20m
+               memory: 200Mi
+            limits:
+              cpu: 30m
+              memory: 300Mi
+
+          ports:
+          - name: redis
+            protocol: TCP
+            containerPort: 6379
+
+##          volumeMounts:
+##            - mountPath: "/root"
+##              name: hhd-storage
+
+#      volumes:
+#        - name: hhd-storage
+#          persistentVolumeClaim:
+#            claimName: hhd-storage
+
+## https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+## https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config
+## https://www.eksworkshop.com/beginner/080_scaling/install_kube_ops_view/
+## https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+## https://chrisedrego.medium.com/kubernetes-monitoring-kubeview-86e59b13da18
+
+## git clone https://github.com/benc-uk/kubeview
+## cd kubeview/charts/
+## helm install kubeview kubeview
+
+
+## https://runterrascan.io/docs/policies/k8s/#kubernetes_pod

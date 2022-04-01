@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  nginx-server
+  labels:
+    nspace: nspace-nginx_server
+    name: namespace_nginx-server
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-server
+  namespace: nginx-server
+spec:
+  selector:
+    app: nginx-server
+  type: LoadBalancer
+  ports:
+  - name: nginx-server
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+    
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dpl-nginx-server
+  namespace: nginx-server
+  labels:
+    app.Deploy.io-name: dpl-nginx
+    app.Deploy.io-instance: nginx
+    app.Deploy.io-managed-by: humberzam
+    app.Deploy.io-component: servidor-nginx
+    app.Deploy.io-part-of: independiente
+    app.Deploy.io-version: v1
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      labelsvc: nginx-server
+
+  template:
+    metadata:
+      name: nginx-server
+      labels:
+        labelsvc: nginx-server
+
+    spec:
+      containers:
+        - name: nginx-server
+          # image: nginx:stable
+          image: humberzam/nginx-dev:v1
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 150m
+              memory: 150Mi
+            limits:
+              cpu: 300m
+              memory: 300Mi
+
+          ports:
+          - name: nginx-server
+            protocol: TCP
+            containerPort: 8080

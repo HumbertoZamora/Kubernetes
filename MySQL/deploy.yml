@@ -1,0 +1,60 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: mysqldb
+  labels:
+    nspace: mysqldb
+    name: mysqldb
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-data
+  namespace: mysqldb
+spec:
+  storageClassName: n1k8s-nfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: mysqldb
+spec:
+  selector:
+    matchLabels:
+      app: k8s-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: k8s-mysql
+    spec:
+      resources:
+      {}
+      containers:
+      - image: mysql:5.6
+        name: k8s-mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: humberzam123
+        ports:
+        - containerPort: 3306
+          name: k8s-mysql
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-data
+
+# kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -phumberzam123

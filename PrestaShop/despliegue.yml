@@ -1,0 +1,59 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: app-prestashop
+  labels:
+    nspace: app-prestashop
+    name: app-prestashop
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prestashop-data
+  namespace: app-prestashop
+spec:
+  storageClassName: n1k8s-nfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prestashop
+  namespace: app-prestashop
+  labels:
+    app: prestashop
+spec:
+  selector:
+    matchLabels:
+      app: prestashop
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prestashop
+        tier: frontend
+    spec:
+      containers:
+      - image: prestashop/prestashop:latest
+        name: prestashop
+        env:
+        - name: DB_SERVER
+          value: prestashop-service
+        - name: DB_PASSWD
+          value: "humberzam123"
+        ports:
+        - containerPort: 80
+          name: prestashop
+      volumes:
+      - name: prestashop-storage
+        persistentVolumeClaim:
+          claimName: prestashop-data

@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hdd-gittea
+  labels:
+    hdd: hdd-gittea
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /Storage/ClusterK8S/Gitea-Server
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-gitea
+  namespace: gitea-svr
+  labels:
+    hdd: hdd-gittea
+spec:
+  resources:
+    requests:
+      storage: 8Gi
+  volumeName: hdd-gittea ##Nombre del VolumenPersistente
+  accessModes:
+    - ReadWriteMany

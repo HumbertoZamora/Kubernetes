@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-confi
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: puppetdb
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: Humb3rZ4m

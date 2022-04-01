@@ -1,0 +1,9 @@
+## Mapea el servicio al exterior con un nombre definido.
+
+apiVersion: extensions/v1beta1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: ExternalName
+  externalName: my.service.example.com

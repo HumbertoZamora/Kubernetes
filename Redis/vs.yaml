@@ -1,0 +1,13 @@
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+#   name: vs-redis
+#   namespace: istio-system
+# spec:
+#   hosts:
+#   - productpage.prod.svc.cluster.local # ignores rule namespace
+#   http:
+#   - timeout: 2s
+#     route:
+#     - destination:
+#         host: productpage.prod.svc.cluster.local

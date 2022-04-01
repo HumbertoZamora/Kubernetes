@@ -1,0 +1,39 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: git-server
+  labels:
+    nspace: git-server
+    name: git-server
+
+---
+
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: hdd-gittea
+#  labels:
+#    hdd: hdd-gittea
+#spec:
+#  capacity:
+#    storage: 5Gi
+#  accessModes:
+#    - ReadWriteMany
+#  persistentVolumeReclaimPolicy: Retain
+#  hostPath:
+#    path: /Storage/ClusterK8S/Gitea-Server
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-gitea-mysql-slave-0
+  namespace: git-server
+spec:
+  storageClassName: n1k8s-nfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

@@ -1,0 +1,39 @@
+ https://istio.io/v1.1/docs/setup/kubernetes/download/
+ 
+ ***** ESTO DESCARGA EL BINARIO istioctl *****
+ curl -L https://git.io/getLatestIstio | sh -
+ 
+ PARA QUE ISTIO FUNCIONE EL NameSpace DEBE DE TENER UNA ETIQUETA: istio-injection=enable
+ kubectl label ns <namespace> istio-injection=enable
+ 
+ kubectl label namespace <namespace> istio-injection=enabled
+ 
+ kubectl label ns redis istio-injection=enable
+ kubectl label ns jenkins istio-injection=enablekubectl label ns jenkins istio-injection=enable
+ kubectl label ns kubernetes-dashboard istio-injection=enablepods
+
+
+ 
+***** COMPROBAR EL ETIQUETADO *****
+kubectl get ns <namespace> --show-labels
+
+kubectl get ns redis --show-labels
+kubectl get ns jenkins --show-labels
+kubectl get ns kubernetes-dashboard --show-labels
+
+***** PARA QUE EL ETIQUETADO DEL NameSpace TENGA EFETO SE DEBE REINICIAR EL NameSpace *****
+kubectl rollout restart deployment -n <namespace>
+
+
+***** APLICAR LA ETIQUETA: istio-injection=enable AL ARCHIVO DE DESPLIRGUE *****
+istioctl kube-inject -f deployment.yaml | kubectl apply -f -
+
+
+kubectl port-forward pods/dpl-redis-547bb9f778-59nk6 -n <namespace> 6379:6379
+
+
+ helm install istiod istio/istiod -n istio-system --wait --set global.proxy.resources.limits.cpu=200m --set global.proxy.resources.limits.memory=256Mi
+ kubectl create namespace istio-ingress
+ kubectl label namespace istio-ingress istio-injection=enabled
+ helm install istio-ingress istio/gateway -n istio-ingress --wait --set service.loadBalancerIP=192.168.100.250
+ 

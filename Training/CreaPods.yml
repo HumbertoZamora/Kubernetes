@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: name-deploy
+  namespace: training
+  labels:
+    app.Deploy.io-name: nginx-ha
+    app.Deploy.io-instance: training
+    app.Deploy.io-managed-by: humberzam
+    app.Deploy.io-component: servidorweb
+    app.Deploy.io-part-of: independiente
+    app.Deploy.io-version: v1
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      labelsvc: svcpods
+  template:
+    metadata:
+      name: nombrepods
+      labels:
+        labelsvc: svcpods
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          imagePullPolicy: Always
+
+          resources:
+            requests:
+               cpu: 20m
+               memory: 200Mi
+            limits:
+              cpu: 30m
+              memory: 300Mi
+
+          ports:
+          - name: http
+            protocol: TCP
+            containerPort: 80
+
+          volumeMounts:
+            - mountPath: "/root"
+              name: hhd-storage
+
+      volumes:
+        - name: hhd-storage
+          persistentVolumeClaim:
+            claimName: hhd-storage
+
+## https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+## https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#config

@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: bind9
+  name: bind-deployment
+  labels:
+    app: bind
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bind
+  template:
+    metadata:
+      labels:
+        app: bind
+    spec:
+      containers:
+        - name: bind
+          image: resystit/bind9
+          ports:
+          - containerPort: 53
+            protocol: UDP
+          volumeMounts:
+            - name:  zonas
+              mountPath: /etc/bind/zones
+            - name: config
+              mountPath: /etc/bind
+          securityContext:
+            allowPrivilegeEscalation: true
+            capabilities:
+              add:
+                - NET_ADMIN
+      volumes:
+        - name: zonas
+          persistentVolumeClaim:
+            claimName: dns-data
+        - name: config
+          configMap: 
+            name: bind9-config
+            items: 
+              - key: named.conf
+                path: named.conf
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dns-data
+  namespace: bind9
+spec:
+  storageClassName: n1k8s-nfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Mi

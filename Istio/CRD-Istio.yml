@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: kube-gateway
+  namespace: istio-ingress
+spec:
+  selector:
+    istio: ingress
+    app: istio-ingress
+# Desde los aqui se llaman: EntryPoints son los puntos de entrada hacia los servicios.
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+    tls:
+      httpsRedirect: false
+  - port:
+      number: 8080
+      name: http-8080
+      protocol: HTTP
+    hosts:
+    - "*"
+    tls:
+      httpsRedirect: false
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: tlssecret
+    hosts:
+    - "*"
+  - port:
+      number: 3306
+      protocol: TCP
+      name: mysql
+    hosts:
+    - '*'
+  - port:
+      number: 6379
+      protocol: TCP
+      name: redis
+    hosts:
+    - "*"
+  - port:
+      number: 22
+      protocol: TCP
+      name: sshd
+    hosts:
+    - "*"

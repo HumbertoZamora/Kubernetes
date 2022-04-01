@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: puppetserver
+  namespace: puppetserver
+  labels:
+    hdd: hdd-pods
+spec:
+  volumeName: puppetserver ##Nombre del VolumenPersistente
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+    - ReadWriteMany

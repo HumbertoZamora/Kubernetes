@@ -1,0 +1,76 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  namespace: etcd-server
+  annotations:
+    descripcion: implementacion de un storageclass llamado hdd-k8s.
+  name: hdd-k8s
+provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: etcd-server
+  name: pv-etcd
+spec:
+  storageClassName: hdd-k8s
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /HDD-Pods/etcd
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: etcd-server
+  name: pv-pgsql
+spec:
+  storageClassName: hdd-k8s
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /HDD-Pods/pgsql
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: etcd-server
+  name: pvc-etcd
+  labels:
+    description: hdd_pvc_para_etcd_server
+spec:
+  storageClassName: hdd-k8s
+  accessModes:
+  - RWX
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: etcd-server
+  name: pvc-pgsql
+  labels:
+    description: hdd_pvc_para_postgresql
+spec:
+  storageClassName: hdd-k8s
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

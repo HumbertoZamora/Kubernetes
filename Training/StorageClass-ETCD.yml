@@ -1,0 +1,48 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  namespace: nfs-provider
+  annotations:
+    descripcion: implementacion de un storageclass llamado hdd-k8s-etc.
+  name: k8s-data
+provisioner: cluster.local
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+
+parameters:
+  server: nfs-server.example.com
+  path: /share
+  readOnly: "false"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: nfs-provider
+  name: pv-etcd
+spec:
+  storageClassName: k8s-data
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /HDD-Pods/etcd
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: nfs-provider
+  name: pvc-etcd
+  labels:
+    description: hdd_pvc_para_etcd_server
+spec:
+  storageClassName: k8s-data
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

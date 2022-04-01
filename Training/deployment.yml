@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: nginx-deployment
+  namespace: istio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+      env: production
+  template:
+## Aqui va la parte del pod ##
+    metadata:
+      labels:
+        app: nginx
+        env: production
+    spec:
+      containers:
+      - name: nginx    
+
+        # image: nginx:1.21.4
+        image: bitnami/openresty
+        imagePullPolicy: Always
+        
+        resources:
+          requests:
+            cpu: 10m
+            memory: 100Mi
+          limits:
+            cpu: 20m
+            memory: 150Mi
+
+        ports:        
+        - protocol: TCP
+          containerPort: 8080
+
+        env:
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: topsecret
+              key: username
+
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: topsecret
+              key: password
+
+        volumeMounts:
+        - name: nginx-www-nfs
+          mountPath: "/app"
+
+        - name: nginx-locations
+          mountPath: "/opt/bitnami/openresty/nginx/conf/bitnami"
+
+        - name: nginx-serverconf
+          mountPath: "/opt/bitnami/openresty/nginx/conf/server_blocks"
+        
+        - name: secret-file
+          mountPath: "/tmp/file"
+ 
+## fin parte del pod ##
+
+      volumes:
+      - name: nginx-www-nfs
+        persistentVolumeClaim:
+          claimName: nginx-claim-nfs
+
+      - name: nginx-locations
+        configMap:
+          name: nginx-configs
+          items:
+            - key: echo.conf
+              path: echo.conf
+            - key: home.conf
+              path: home.conf
+
+      - name: nginx-serverconf
+        configMap:
+          name: nginx-configs
+          items:
+            - key: proxy-headers.conf
+              path: proxy-headers.conf
+
+      - name: secret-file
+        secret: 
+          secretName: topsecret
+          items:
+          - key: archivo.txt
+            path: archivo.txt

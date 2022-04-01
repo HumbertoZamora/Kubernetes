@@ -1,0 +1,11 @@
+--2021-12-29 10:07:13--  https://docs.projectcalico.org/v3.10/manifests/calico-policy-only.yaml
+Resolviendo docs.projectcalico.org (docs.projectcalico.org)... 167.172.136.193, 157.245.242.152, 2604:a880:400:d0::1bdf:e001, ...
+Conectando con docs.projectcalico.org (docs.projectcalico.org)[167.172.136.193]:443... conectado.
+Petición HTTP enviada, esperando respuesta... 200 OK
+Longitud: 19739 (19K) [text/yaml]
+Grabando a: “calico-policy-only.yaml”
+
+     0K .......... .........                                  100%  247K=0.08s
+
+2021-12-29 10:07:14 (247 KB/s) - “calico-policy-only.yaml” guardado [19739/19739]
+
